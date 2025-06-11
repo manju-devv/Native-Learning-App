@@ -1,3 +1,6 @@
+# check out the demo app by dowloading from the link
+https://drive.google.com/file/d/1r0_o1PaDbk15ZNV5Mqx2ppKdUPxO_Bb1/view?usp=sharing
+
 This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
 
 # Getting Started
