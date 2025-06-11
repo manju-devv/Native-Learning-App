@@ -1,131 +1,100 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
+import { StyleSheet, Text, View } from 'react-native';
+import React, { useContext } from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import Icon from "react-native-vector-icons/Ionicons";
+import HomeScreen from './src/screens/HomeScreen';
+import { createStackNavigator } from '@react-navigation/stack';
+import ProduceDetailsScreen from './src/screens/ProduceDetailsScreen';
+import CartScreen from './src/screens/CartScreen';
+import { cartContext, CartProvider } from './src/context/CartContext';
 
-import React from 'react';
-import type {PropsWithChildren} from 'react';
-import {
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+const Tab = createBottomTabNavigator();
+const Stack = createStackNavigator();
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
-
-function Section({children, title}: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
+const getTabIcon = (name:string,size:number,color:string,focused:boolean) => {
+  const {carts} = useContext(cartContext);
+  let iconName;
+  if(name === "HOME_STACK"){
+    iconName = focused ? "home" : "home-outline"; 
+  } else if(name === "REORDER"){
+    iconName = focused ? "reorder-four" : "reorder-four-outline";
+  } else if(name === "CART"){
+    iconName = focused ? "cart" : "cart-outline";
+  } else {
+    iconName = focused ? "person" : "person-outline"
+  }
   return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
+    <View style={{position: "relative"}}>
+      <Icon name={iconName} color={color} size={size} />
+      {name === "CART" && carts.length > 0 && (
+        <View style={{
+          height: 14,
+          width: 14,
+          borderRadius: 7,
+          backgroundColor: color,
+          alignItems: "center",
+          justifyContent: "center",
+          position: "absolute",
+          right: -5,
+          top: -6,
+        }}>
+          <Text style={{fontSize: 10,color: "white",fontWeight: "600"}}>{carts.length}</Text>
+        </View>
+      )}
     </View>
-  );
+  )
 }
 
-function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
-  /*
-   * To keep the template simple and small we're adding padding to prevent view
-   * from rendering under the System UI.
-   * For bigger apps the recommendation is to use `react-native-safe-area-context`:
-   * https://github.com/AppAndFlow/react-native-safe-area-context
-   *
-   * You can read more about it here:
-   * https://github.com/react-native-community/discussions-and-proposals/discussions/827
-   */
-  const safePadding = '5%';
-
-  return (
-    <View style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        style={backgroundStyle}>
-        <View style={{paddingRight: safePadding}}>
-          <Header/>
-        </View>
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-            paddingHorizontal: safePadding,
-            paddingBottom: safePadding,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
+const Home = () => {
+  return(
+    <View>
+      <Text>Home</Text>
     </View>
-  );
+  )
 }
 
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
+const MyHomeStack = () => {
+  return(
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false
+      }}
+    >
+      <Stack.Screen name='HOME' component={HomeScreen} />
+      <Stack.Screen name='PRODUCT_DETAILS' component={ProduceDetailsScreen} />
+    </Stack.Navigator>
+  )
+}
+
+const App = () => {
+  return (
+    <CartProvider>
+      <NavigationContainer>
+        <Tab.Navigator 
+        screenOptions={({route}) => ({
+          tabBarIcon: ({size,color,focused}) =>{ 
+            return getTabIcon(route.name,size,color,focused)
+          },
+          headerShown: false,
+          tabBarShowLabel: false,
+          tabBarActiveTintColor: "#e96e6e",
+          tabBarStyle: {
+            paddingTop: 5,
+          },
+        })}
+        // initialRouteName='CART'
+        >
+          <Tab.Screen name="HOME_STACK" component={MyHomeStack} />
+          <Tab.Screen name="REORDER" component={Home} />
+          <Tab.Screen name="CART" component={CartScreen} />
+          <Tab.Screen name="ACCOUNT" component={Home} />
+        </Tab.Navigator>
+      </NavigationContainer>
+    </CartProvider>
+  );
+};
 
 export default App;
+
+const styles = StyleSheet.create({});

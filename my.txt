@@ -1,0 +1,17 @@
+npm install @react-navigation/native
+npm install react-native-screens react-native-safe-area-context
+        react-native-screens
+            Purpose:
+            Optimizes navigation performance by using native primitives to manage screens.
+            Reduces memory usage and improves transitions by "freezing" off-screen components.
+            Heavily used in react-navigation to enhance screen mounting/unmounting behavior.
+            Use Case:
+            When using libraries like @react-navigation/native or @react-navigation/stack, it's used internally to boost performance.
+            Especially useful when navigating between many screens, or dealing with complex navigation stacks.
+
+npm install @react-navigation/bottom-tabs
+npm i react-native-vector-icons
+        --> Edit android/app/build.gradle (NOT android/build.gradle) and add:
+        apply from: file("../../node_modules/react-native-vector-icons/fonts.gradle")
+
+npm i react-native-linear-gradient
